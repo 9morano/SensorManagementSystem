@@ -86,9 +86,16 @@ RUN echo "*/10 * * * * root /root/videk-hosts/videk-ping.sh" \
 # install Videk CI
 RUN apt-get install -y zip
 RUN apt-get install -y make
-RUN apt-get install -y python3-flask
+#RUN apt-get install -y python3-flask --> installed with pip3 below
 RUN cd /root && \
 git clone https://github.com/matevzv/videk-ci.git
+
+# Install Experiment Controller tool
+RUN apt-get install -y python3-pip \
+    && pip3 install flask flask-socketio pyzmq eventlet gunicorn
+RUN cd /root && \
+git clone --single-branch --branch develop/grega https://github.com/logatec3/logatec-experiment.git
+# TODO: Change the branch name, when it is deployed on master branch 
 
 # install Jenkins
 RUN wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | \

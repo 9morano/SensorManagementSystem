@@ -108,6 +108,47 @@ else
     echo -e "\t}\n}" >> "$NGINX_CONF"
 fi
 
+if [ -z "$EXPERIMENT_CONTROLLER" ]; then
+    echo "Consider adding experiment controller service!"
+else
+    # Update controller repository in case there are any new changes since Docker image was built
+    # TODO: Remove when deployed
+    echo "Pulling changes from controller repo"
+    cd /root/logatec-experiment
+    git pull
+    cd /root/SensorManagementSystem
+
+    # Nginx config for Flask app
+    NGINX_CONF="/etc/nginx/conf.d/default.conf"
+    sed -i '$ s/.$//' "$NGINX_CONF"
+    echo -e "\tlocation /controller/ {" >> "$NGINX_CONF"
+    echo -e "\t\tinclude proxy_params;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_pass http://localhost:"$EXPERIMENT_CONTROLLER"/controller/;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header Host \$host;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header X-Forwarded-Proto \$scheme;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header X-Real-IP \$remote_addr;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_buffering off;" >> "$NGINX_CONF"
+    echo -e "\t}\n\n" >> "$NGINX_CONF"
+
+    # Nginx config for WebSockets API
+    echo -e "\tlocation /socket.io {" >> "$NGINX_CONF"
+    echo -e "\t\tinclude proxy_params;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_pass http://localhost:"$EXPERIMENT_CONTROLLER"/socket.io;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_buffering off;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_http_version 1.1;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header Upgrade \$http_upgrade;" >> "$NGINX_CONF"
+    echo -e '\t\tproxy_set_header Connection "upgrade";' >> "$NGINX_CONF"
+    echo -e "\t}\n}" >> "$NGINX_CONF"
+
+    # Start Gunicorn server with Flask app
+    SUPERVISORD="/etc/supervisor/conf.d/supervisord.conf"
+    echo -e "\n[program:experiment-controller]" >> "$SUPERVISORD"
+    echo -e "directory=/root/logatec-experiment/monitoring" >> "$SUPERVISORD"
+    echo -e "autorestart=true" >> "$SUPERVISORD"
+    echo -e "command=gunicorn --bind localhost:"$EXPERIMENT_CONTROLLER" --worker-class eventlet -w 1 fserver:app" >> "$SUPERVISORD"
+fi
+
 if [ "$HTTPS" = "true" ]; then
     if [ "$EMAIL" = "" ] || [ "$DOMAIN" = "" ]; then
         echo "Email and/or domain missing!"
