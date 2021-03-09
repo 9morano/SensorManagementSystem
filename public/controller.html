@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+		<head>
+				<meta charset="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+				<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+				<style type="text/css">
+						body { padding-top: 60px }
+				</style>
+				<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+				<link href="css/carvic.css" rel="stylesheet">
+
+				<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
+				<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+				<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+				<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+				<script type="text/javascript" src="js/carvic.js"></script>
+				<script>
+						$(document).ready(function () {
+								Carvic.InitComponentList();
+								ko.applyBindings(Carvic.Model.Components);
+								$(".input")
+										.attr("data-placement", "right")
+										.tooltip();
+								$("input").keyup(function (event) {
+										if (event.keyCode == 13) {
+												$("#btnSearch").click();
+										}
+								});
+						});
+				</script>
+				<title>Sensor Management System - nodes</title>
+		</head>
+		<body>
+
+
+				<div class="navbar navbar-inverse navbar-fixed-top">
+								<div class="container-fluid">
+										<div class="navbar-header">
+												<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+													<span class="sr-only">Toggle navigation</span>
+													<span class="icon-bar"></span>
+													<span class="icon-bar"></span>
+													<span class="icon-bar"></span>
+												</button>
+												<a class="navbar-brand" href="admin.html"><img src="img/sensorlab-only-logo-white-21px.png"> SensorLab</a>
+										</div>
+										<div class="navbar-collapse collapse" style="top: 20">
+												<ul class="nav navbar-nav" id="navRight">
+														<li><a href="clusters.html"><i class="glyphicon glyphicon-th"></i> Clusters</a></li>
+														<li><a href="nodes.html"><i class="glyphicon glyphicon-map-marker"></i> Nodes</a></li>
+														<li><a href="components.html"><i class="glyphicon glyphicon-tasks"></i> Components</a></li>
+														<li><a href="/munin.html"><i class="glyphicon glyphicon-dashboard"></i> Monitoring</a></li>
+												</ul>
+												<ul class="nav navbar-nav navbar-right">
+														<li class="active"><a href="help"><i class="glyphicon glyphicon-question-sign" title="Show help"></i> Help</a></li>
+														<li><a data-bind="click: $root.StdData.CurrentUserPage", style="cursor: pointer"><i class="glyphicon glyphicon-user"></i> <span data-bind="text: $root.StdData.CurrentUserFullname, attr: { title: StdData.CurrentUserTooltip }"></span></a></li>
+														<li><a href="#" onclick="javascript: Carvic.Utils.Logout(); "><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
+												</ul>
+										</div>
+								</div>
+				</div>
+					<div class="embed-responsive embed-responsive-16by9">
+						<iframe class="embed-responsive-item" src="/controller/"></iframe>
+					</div>
+		</body>
+</html>
