@@ -129,7 +129,10 @@ else
     echo -e "\t\tproxy_set_header X-Forwarded-Proto \$scheme;" >> "$NGINX_CONF"
     echo -e "\t\tproxy_set_header X-Real-IP \$remote_addr;" >> "$NGINX_CONF"
     echo -e "\t\tproxy_buffering off;" >> "$NGINX_CONF"
-    echo -e "\t}\n\n" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_http_version 1.1;" >> "$NGINX_CONF"
+    echo -e "\t\tproxy_set_header Upgrade \$http_upgrade;" >> "$NGINX_CONF"
+    echo -e '\t\tproxy_set_header Connection "upgrade";' >> "$NGINX_CONF"    
+    echo -e "\t}\n}" >> "$NGINX_CONF"
 
     # Start Gunicorn server with Flask app
     SUPERVISORD="/etc/supervisor/conf.d/supervisord.conf"
