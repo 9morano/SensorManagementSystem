@@ -135,7 +135,11 @@ VOLUME ["/data/db", "/etc/munin", "/var/lib/munin", "/var/cache/munin/www", \
 "/etc/letsencrypt", "/var/lib/jenkins"]
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# For testing on different port
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/start.sh /root/start.sh
 RUN chmod 755 /root/start.sh
 
 ENTRYPOINT ["/root/start.sh"]
+
+#docker run -p 81:81 -e DOMAIN=localhost -e WS=localhost -e HTTPS=true -e EXPERIMENT_CONTROLLER=8001 videk
