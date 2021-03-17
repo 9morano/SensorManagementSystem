@@ -140,6 +140,10 @@ else
     echo -e "directory=/root/logatec-experiment/monitoring" >> "$SUPERVISORD"
     echo -e "autorestart=true" >> "$SUPERVISORD"
     echo -e "command=gunicorn --bind localhost:"$EXPERIMENT_CONTROLLER" --worker-class eventlet -w 1 fserver:app" >> "$SUPERVISORD"
+    
+    #echo -e "stdout_logfile=/dev/stdout" >> "$SUPERVISORD"
+    #echo -e "stdout_logfile_maxbytes=0" >> "$SUPERVISORD"
+    #echo -e "redirect_stderr = True" >> "$SUPERVISORD"
 fi
 
 if [ "$HTTPS" = "true" ]; then
