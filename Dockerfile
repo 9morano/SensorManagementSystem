@@ -135,8 +135,6 @@ VOLUME ["/data/db", "/etc/munin", "/var/lib/munin", "/var/cache/munin/www", \
 "/etc/letsencrypt", "/var/lib/jenkins"]
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-# For testing on different port
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/start.sh /root/start.sh
 RUN chmod 755 /root/start.sh
 
