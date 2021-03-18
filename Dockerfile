@@ -116,7 +116,7 @@ COPY docker/mosquitto/videk.conf /etc/mosquitto/conf.d
 # install Videk master from github
 # TODO: Change repo back to sensorlab master branch when deployed
 RUN cd /root && \
-git clone --branch experiment-monitor https://github.com/9morano/SensorManagementSystem.git
+git clone --branch test https://github.com/9morano/SensorManagementSystem.git
 WORKDIR /root/SensorManagementSystem
 RUN npm install
 RUN /usr/bin/mongod --fork --logpath /var/log/mongodb.log --dbpath \
