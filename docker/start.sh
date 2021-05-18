@@ -134,16 +134,20 @@ else
     echo -e '\t\tproxy_set_header Connection "upgrade";' >> "$NGINX_CONF"    
     echo -e "\t}\n}" >> "$NGINX_CONF"
 
-    # Start Gunicorn server with Flask app
+    # Supervisord config -> Start Gunicorn server with Flask app
     SUPERVISORD="/etc/supervisor/conf.d/supervisord.conf"
     echo -e "\n[program:experiment-controller]" >> "$SUPERVISORD"
     echo -e "directory=/root/logatec-experiment/monitoring" >> "$SUPERVISORD"
     echo -e "autorestart=true" >> "$SUPERVISORD"
     echo -e "command=gunicorn --bind localhost:"$EXPERIMENT_CONTROLLER" --worker-class eventlet -w 1 controller_server:app" >> "$SUPERVISORD"
-    
+    # Aditional logs (TODO delete when deployed)
     #echo -e "stdout_logfile=/dev/stdout" >> "$SUPERVISORD"
     #echo -e "stdout_logfile_maxbytes=0" >> "$SUPERVISORD"
     #echo -e "redirect_stderr = True" >> "$SUPERVISORD"
+
+    # controller_server.py config
+    sed -i 's/CONTROLLER_HOSTNAME =.*/CONTROLLER_HOSTNAME = "tcp:\/\/193.2.205.19:5563"/1' \
+    /root/logatec-experiment/monitoring/controller_server.py
 fi
 
 if [ "$HTTPS" = "true" ]; then
